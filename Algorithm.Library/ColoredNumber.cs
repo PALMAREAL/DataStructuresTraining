@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace Algorithm.Library
 {
@@ -22,35 +23,42 @@ namespace Algorithm.Library
         // override object.Equals
         public override bool Equals(object obj)
         {
-            //       
-            // See the full list of guidelines at
-            //   http://go.microsoft.com/fwlink/?LinkID=85237  
-            // and also the guidance for operator== at
-            //   http://go.microsoft.com/fwlink/?LinkId=85238
-            //
-
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
+            // Option 01 Microsoft implementacion by default
+            //if (obj == null || GetType() != obj.GetType())
+            //{
+            //    return false;
+            //}
 
             // TODO: write your implementation of Equals() here
-            throw new System.NotImplementedException();
-            return base.Equals(obj);
+            
+            //ColoredNumber otherColoredNumber = (ColoredNumber)obj;
+
+            //return (Color == otherColoredNumber.Color)
+            //    && (Number == otherColoredNumber.Number);
+
+            
+            // Option 02
+
+            ColoredNumber otherColoredNumber = obj as ColoredNumber;
+
+            if (otherColoredNumber == null) return false;
+
+            return (Color == otherColoredNumber.Color)
+                && (Number == otherColoredNumber.Number);
         }
 
         // override object.GetHashCode
         public override int GetHashCode()
         {
-            // TODO: write your implementation of GetHashCode() here
-            throw new System.NotImplementedException();
-            return base.GetHashCode();
+            return Color.GetHashCode() * 17 + Number.GetHashCode() * 13;
         }
 
         public override string ToString()
         {
-            return base.ToString();
+            return String.Format("Number:{0} - Type:{1} - Color:{2} ",
+               Number.ToString(),
+               Number % 2 == 0 ? "Par" : "Impar",
+               Color.ToString());
         }
-
     }
 }
