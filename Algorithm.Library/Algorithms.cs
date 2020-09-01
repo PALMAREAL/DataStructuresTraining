@@ -76,5 +76,27 @@ namespace Algorithm.Library
 
             return result;
         }
+
+        /// <summary>
+        /// Displace array n positions 
+        /// </summary>
+        /// <param name="baseArray"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static int[] DisplaceArray(int[] baseArray, int n)
+        {
+            if (baseArray == null
+                || !baseArray.Any()
+                || n < 0)
+                throw new ArgumentException("The inputs must be valid");
+
+            if (n >= baseArray.Length
+                && n % baseArray.Length == 0)
+                return baseArray;
+
+            int[] result = new int[baseArray.Length];
+
+            return result;
+        }
     }
 }
