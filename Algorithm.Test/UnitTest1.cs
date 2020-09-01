@@ -15,7 +15,14 @@ namespace Algorithm.Test
 
             int count = 5;
 
-            List<ColoredNumber> expected = new List<ColoredNumber>();
+            List<ColoredNumber> expected = new List<ColoredNumber>()
+            {
+                new ColoredNumber(){Number = 7, Color = Color.Green},
+                new ColoredNumber(){Number = 2, Color = Color.Red},
+                new ColoredNumber(9,Color.Green),
+                new ColoredNumber(8,Color.Red),
+                new ColoredNumber(22,Color.Red)
+            };
   
             List<ColoredNumber> result = Algorithms.ProcessList(input, count);
 
