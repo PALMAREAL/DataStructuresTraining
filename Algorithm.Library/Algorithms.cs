@@ -8,8 +8,8 @@ namespace Algorithm.Library
     public class Algorithms
     {
         /// <summary>
-        /// Take the N first positive value from input list
-        /// The the even numbers are red, the odd nubers are green
+        /// Take the N first positive value from input list.
+        /// The even numbers are red, the odd nubers are green.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="count"></param>
@@ -58,21 +58,21 @@ namespace Algorithm.Library
 
             
             // Option 03
-            var i = 0;
+            //var i = 0;
 
-            while (result.Count < count)
-            {
-                if (input[i] > 0)
-                {
-                    var color = (input[i] % 2 == 0)
-                         ? Color.Red
-                         : Color.Green;
+            //while (result.Count < count)
+            //{
+            //    if (input[i] > 0)
+            //    {
+            //        var color = (input[i] % 2 == 0)
+            //             ? Color.Red
+            //             : Color.Green;
 
-                    result.Add(new ColoredNumber(input[i], color));
-                }
+            //        result.Add(new ColoredNumber(input[i], color));
+            //    }
 
-                i++;
-            }
+            //    i++;
+            //}
 
             return result;
         }
