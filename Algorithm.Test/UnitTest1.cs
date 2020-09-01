@@ -28,5 +28,19 @@ namespace Algorithm.Test
 
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void DisplaceArray()
+        {
+            int n = 3;
+
+            int[] baseArray = new int[] { 4, 7, 2, 8 };;
+
+            int[] expected = new int[] { 7, 2, 8, 4 };
+
+            int[] result = Algorithms.DisplaceArray(baseArray, n);
+
+            Assert.Equal(expected, result);
+        }
     }
 }
