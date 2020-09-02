@@ -77,6 +77,7 @@ namespace Algorithm.Library
             return result;
         }
 
+
         /// <summary>
         /// Displace array n positions 
         /// </summary>
@@ -97,6 +98,60 @@ namespace Algorithm.Library
             int[] result = new int[baseArray.Length];
 
             return result;
+        }
+
+        /// <summary>
+        /// Example operator ??
+        /// </summary>
+        /// <param name="coloredNumber"></param>
+        /// <returns></returns>
+        public static ColoredNumber NullableValue(ColoredNumber coloredNumber)
+        {
+            return coloredNumber ?? new ColoredNumber(7, Color.Green);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="myQueue"></param>
+        /// <returns></returns>
+        public static int CountQueue(Queue<int> queue)
+        {
+            if (queue == null)
+                throw new ArgumentException("The queue it's null");
+
+            int count = 0;
+
+            while (queue.Any())
+            {
+                queue.Dequeue();
+                count++;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="city"></param>
+        /// <param name="cities"></param>
+        /// <returns></returns>
+        public static bool LastCityIs(string city, Stack<string> cities)
+        {
+            if (cities == null)
+                throw new ArgumentException("The cities are invalid");
+
+            if (string.IsNullOrEmpty(city) 
+                || !cities.Any())
+                return false;
+
+            string currentCity = string.Empty;
+
+            while (cities.Any())
+                currentCity = cities.Pop();
+
+            return city == currentCity;
         }
     }
 }
