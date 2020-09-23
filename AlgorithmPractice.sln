@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm.UI", "Algorithm.UI\Algorithm.UI.csproj", "{16D58A5D-153D-4BED-9AF4-68159A41D3ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithm.UI", "Algorithm.UI\Algorithm.UI.csproj", "{16D58A5D-153D-4BED-9AF4-68159A41D3ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm.Test", "Algorithm.Test\Algorithm.Test.csproj", "{E26AA606-EE3F-40F4-A9FB-A342AAD78709}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithm.Test", "Algorithm.Test\Algorithm.Test.csproj", "{E26AA606-EE3F-40F4-A9FB-A342AAD78709}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm.Library", "Algorithm.Library\Algorithm.Library.csproj", "{D4737FAE-03DC-4C1A-B16E-C70B30EAB701}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithm.Library", "Algorithm.Library\Algorithm.Library.csproj", "{D4737FAE-03DC-4C1A-B16E-C70B30EAB701}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

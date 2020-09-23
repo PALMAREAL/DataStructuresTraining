@@ -30,20 +30,6 @@ namespace Algorithm.Test
         }
 
         [Fact]
-        public void DisplaceArray()
-        {
-            int n = 3;
-
-            int[] baseArray = new int[] { 4, 7, 2, 8 };
-
-            int[] expected = new int[] { 7, 2, 8, 4 };
-
-            int[] result = Algorithms.DisplaceArray(baseArray, n);
-
-            Assert.Equal(expected, result);
-        }
-
-        [Fact]
         public void NullableValue()
         {
             ColoredNumber coloredNumber = null;
@@ -82,6 +68,24 @@ namespace Algorithm.Test
             bool expected = true;
 
             bool result = Algorithms.LastCityIs(city, cities );
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void DisplaceArray()
+        {
+            int n = 2;
+
+            int[] array = new int[] { 4, 7, 2, 8 };
+
+            //int[] expected = new int[] { 8, 4, 7, 2 };
+
+            int[] expected = new int[] { 2, 8, 4, 7 };
+
+            //int[] expected = new int[] { 7, 2, 8, 4 };
+
+            int[] result = Algorithms.DisplaceArrayOpt(array, n);
 
             Assert.Equal(expected, result);
         }

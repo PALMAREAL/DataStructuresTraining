@@ -9,14 +9,14 @@ namespace Algorithm.Library
     {
         /// <summary>
         /// Take the N first positive value from input list
-        /// The the even numbers are red, the odd nubers are green
+        /// The even numbers are red, the odd nubers are green
         /// </summary>
         /// <param name="input"></param>
         /// <param name="count"></param>
         /// <returns></returns>
         public static List<ColoredNumber> ProcessList(List<int> input, int count)
         {
-            if (input == null 
+            if (input == null
                 || !input.Any()
                 || count <= 0
                 || input.Count < count)
@@ -31,7 +31,7 @@ namespace Algorithm.Library
                     continue;
 
                 if (item % 2 == 0)
-                    result.Add(new ColoredNumber(item,Color.Red));
+                    result.Add(new ColoredNumber(item, Color.Red));
 
                 else
                     result.Add(new ColoredNumber(item, Color.Green));
@@ -56,7 +56,7 @@ namespace Algorithm.Library
             //        break;
             //}
 
-            
+
             // Option 03
             var i = 0;
 
@@ -77,29 +77,6 @@ namespace Algorithm.Library
             return result;
         }
 
-
-        /// <summary>
-        /// Displace array n positions 
-        /// </summary>
-        /// <param name="baseArray"></param>
-        /// <param name="n"></param>
-        /// <returns></returns>
-        public static int[] DisplaceArray(int[] baseArray, int n)
-        {
-            if (baseArray == null
-                || !baseArray.Any()
-                || n < 0)
-                throw new ArgumentException("The inputs must be valid");
-
-            if (n >= baseArray.Length
-                && n % baseArray.Length == 0)
-                return baseArray;
-
-            int[] result = new int[baseArray.Length];
-
-            return result;
-        }
-
         /// <summary>
         /// Example operator ??
         /// </summary>
@@ -109,6 +86,8 @@ namespace Algorithm.Library
         {
             return coloredNumber ?? new ColoredNumber(7, Color.Green);
         }
+
+
 
         /// <summary>
         /// 
@@ -142,7 +121,7 @@ namespace Algorithm.Library
             if (cities == null)
                 throw new ArgumentException("The cities are invalid");
 
-            if (string.IsNullOrEmpty(city) 
+            if (string.IsNullOrEmpty(city)
                 || !cities.Any())
                 return false;
 
@@ -152,6 +131,121 @@ namespace Algorithm.Library
                 currentCity = cities.Pop();
 
             return city == currentCity;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static int[] DisplaceArray(int[] array, int n)
+        {
+            if (array == null
+                || !array.Any()
+                || n < 0)
+                throw new ArgumentException("The inputs must be valid");
+
+            if (n >= array.Length
+                && n % array.Length == 0)
+                return array;
+
+            int[] result = array;
+
+            for (int i = 0; i < n; i++)
+                result = DisplaceArray(result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static int[] DisplaceArrayRef(int[] array, int n)
+        {
+            if (array == null
+                || !array.Any()
+                || n < 0)
+                throw new ArgumentException("The inputs must be valid");
+
+            if (n >= array.Length
+                && n % array.Length == 0)
+                return array;
+
+            for (int i = 0; i < n; i++)
+                DisplaceArrayRef(ref array);
+
+            return array;
+        }
+
+        /// <summary>
+        /// Displace array 1 positions 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        private static int[] DisplaceArray(int[] array)
+        {
+            int length = array.Length;
+
+            int[] result = new int[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = (i == 0)
+                    ? array[length - 1]
+                    : array[i - 1];
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Displace array 1 positions 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        private static void DisplaceArrayRef(ref int[] array)
+        {
+            int length = array.Length;
+
+            int[] result = new int[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = (i == 0)
+                    ? array[length - 1]
+                    : array[i - 1];
+            }
+
+             array = result ;
+        }
+
+        public static int[] DisplaceArrayOpt(int[] array, int k)
+        {
+            var length = array.Length;
+
+            k = (k > length)
+                ? k % length
+                : k;
+
+            var result = new int[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                var index = (i < k)
+                    ? length - k + i
+                    : i - k;
+
+                result[i] = array[index];
+            }
+
+            return result;
         }
     }
 }
