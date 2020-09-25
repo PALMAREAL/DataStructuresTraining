@@ -141,7 +141,94 @@ namespace Algorithm.Library.LinQ
             player.Name.StartsWith('G'))).ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public List<Player> PlayersSurnamedWithConditions()
+        {
+            return Data.Where(player => player.Surname.Contains('a') && 
+            player.Surname.Contains('o')).ToList();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<Player> PlayersSurnamedWithConditionsAO()
+        {
+            return Data.Where(player => 
+            player.Surname.Contains('a') &&
+            player.Surname.Contains('o') && 
+            (player.Surname.Contains('a').ToString().IndexOf('a') < player.Surname.Contains('o').ToString().IndexOf('o'))).ToList();
+        }
+
+        /// <summary>
+        /// 14.
+        /// </summary>
+        /// <param name="minWeight"></param>
+        /// <param name="maxWeight"></param>
+        /// <returns></returns>
+        public List<Player> NameAndBirthYear(double minWeight, double maxWeight)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 15.
+        /// </summary>
+        /// <param name="elo"></param>
+        /// <returns></returns>
+        public List<Player> SurnameAndGender(int elo)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 16.
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public List<Player> NameAndElo(DateTime dateTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 17.
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public List<Player> FullNameAndBirthdayDescSortByRanking(int number)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 18.
+        /// </summary>
+        /// <returns></returns>
+        public List<Player> PlayersGroupByGenderAndDescSortElo()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 19.
+        /// </summary>
+        /// <param name="minWeight"></param>
+        /// <param name="maxWeight"></param>
+        /// <returns></returns>
+        public List<Player> PlayersExceptWeights(double minWeight, double maxWeight)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 20.
+        /// </summary>
+        /// <returns></returns>
+        public List<Player> PlayersWithEvenElo()
         {
             throw new NotImplementedException();
         }
