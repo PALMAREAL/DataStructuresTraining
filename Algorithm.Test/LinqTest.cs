@@ -71,11 +71,11 @@ namespace Algorithm.Test
         [Fact]
         public void Exist_Player_Older_Than()
         {
-            bool result = Query.ExistPlayerOlderThan(80);
+            bool result = Query.ExistPlayerOlderThan(25);
 
-            Assert.False(result);
+            Assert.True(result);
         }
-
+    
         //2
         [Fact]
         public void Count_Femmale_Players()
@@ -89,7 +89,7 @@ namespace Algorithm.Test
         [Fact]
         public void Exist_Player_Named()
         {
-            bool result = Query.ExistPlayerNamed("Magnus");
+            bool result = Query.ExistPlayerNamed("Carlsen");
 
             Assert.True(result);
         }
@@ -100,14 +100,14 @@ namespace Algorithm.Test
         {
             int result = Query.PlayerPositionInitialList("Kasparov");
 
-            Assert.Equal(2, result);
+            Assert.Equal(3, result);
         }
 
         //5
         [Fact]
         public void Player_Ranking_Position()
         {
-            int result = Query.PlayerRankingPosition("Kasparov", 2812);
+            int result = Query.PlayerRankingPosition("Kasparov");
 
             Assert.Equal(2, result);
         }
@@ -122,32 +122,33 @@ namespace Algorithm.Test
         }
 
         //7
-        //[Fact]
-        //public void Calculate_Total_Weight()
-        //{
-        //    double result = Query.CalculateTotalWeight();
+        [Fact]
+        public void Total_Weight_From_Elo_Range()
+        {
+            double result = Query.TotalWeightFromEloRange(2600, 2699);
 
-        //    Assert.Equal(202.1, result);
-        //}
+            Assert.Equal(202.1, result);
+        }
 
         //8 
         //[Fact]
         //public void Surname_And_Elo_SortAsc_ByBirthday()
         //{
-        //    List<Player> result = Query.SortAscByBirthday();
+        //    List<Player> result = Query.SurnameAndEloSortAscByBirthday();
 
-        //    List<Player> expected = new List<Player>() 
-        //    { 
-        //        new Player(){Surname = "Yifan", Elo = 2658},
-        //        new Player(){Surname = "Carlsen", Elo = 2863 },
-        //        new Player(){Surname = "Polgar", Elo = 2646 },
+        //    List<Player> expected = new List<Player>()
+        //    {
+        //        new Player(){Surname = "Karpov", Elo = 2617 },
         //        new Player(){Surname = "Garry", Elo = 2812 },
-        //        new Player(){Surname = "Karpov", Elo = 2617 }
+        //        new Player(){Surname = "Polgar", Elo = 2646 },
+        //        new Player(){Surname = "Carlsen", Elo = 2863 },
+        //        new Player(){Surname = "Yifan", Elo = 2658},   
         //    };
 
         //    Assert.Equal(expected, result);
         //}
 
+  
         //9
         [Fact]
         public void Evaluate_Men_Women_Proportion()
@@ -159,50 +160,106 @@ namespace Algorithm.Test
 
         //10
         [Fact]
-        public void Get_Players_With_Named_Conditions()
+        public void Males_Players_With_Name_First_Char()
         {
-            List<Player> result = Query.PlayersNameWithConditions();
+            List<Player> result = Query.MalesNamesWithFirstChar();
 
             List<Player> expected = new List<Player>()
             {
-                new Player(){Name = "Anatoly"},
-                new Player(){Name = "Garry"}
+               new Player
+                {
+                    Name = "Anatoly",
+                    Surname = "Karpov",
+                    Gender = 'M',
+                    Birthday = new DateTime(1951,2,14),
+                    Weight = 81.4,
+                    Elo = 2617
+                },
+                new Player
+                {
+                    Name = "Garry",
+                    Surname = "Kasparov",
+                    Gender = 'm',
+                    Birthday = new DateTime(1963,7,4),
+                    Weight = 64.2,
+                    Elo = 2812
+                }
             };
 
             Assert.Equal(expected, result);
         }
-
+        
         //11
         [Fact]
-        public void Get_Players_With_Surnamed_Conditions()
+        public void Players_Surnamed_Contains()
         {
-            List<Player> result = Query.PlayersSurnamedWithConditions();
+            List<Player> result = Query.PlayersSurnamedContains('a', 'o');
 
             List<Player> expected = new List<Player>()
             {
-                new Player(){Surname = "Karpov"},
-                new Player(){Surname = "Polgar"},
-                new Player(){Surname = "Kasparov"}
+                new Player
+                {
+                    Name = "Anatoly",
+                    Surname = "Karpov",
+                    Gender = 'M',
+                    Birthday = new DateTime(1951,2,14),
+                    Weight = 81.4,
+                    Elo = 2617
+                },
+                new Player
+                {
+                    Name = "Judith",
+                    Surname = "Polgar",
+                    Gender = 'F',
+                    Birthday = new DateTime(1976,2,11),
+                    Weight = 70.7,
+                    Elo = 2646
+                },
+                new Player
+                {
+                    Name = "Garry",
+                    Surname = "Kasparov",
+                    Gender = 'm',
+                    Birthday = new DateTime(1963,7,4),
+                    Weight = 64.2,
+                    Elo = 2812
+                }
             };
 
             Assert.Equal(expected, result);
         }
-
+        
         //12
         [Fact]
-        public void Get_Players_With_Surnamed_Conditions_First_a_then_o()
+        public void Players_Surnamed_Contains_In_ThisOrder()
         {
-            List<Player> result = Query.PlayersSurnamedWithConditionsAO();
+            List<Player> result = Query.PlayersSurnamedContainsInThisOrder('a', 'o');
 
             List<Player> expected = new List<Player>()
             {
-                new Player(){Surname = "Karpov"},
-                new Player(){Surname = "Kasparov"}
+                 new Player
+                {
+                    Name = "Anatoly",
+                    Surname = "Karpov",
+                    Gender = 'M',
+                    Birthday = new DateTime(1951,2,14),
+                    Weight = 81.4,
+                    Elo = 2617
+                },
+                new Player
+                {
+                    Name = "Garry",
+                    Surname = "Kasparov",
+                    Gender = 'm',
+                    Birthday = new DateTime(1963,7,4),
+                    Weight = 64.2,
+                    Elo = 2812
+                }
             };
 
             Assert.Equal(expected, result);
         }
-
+        /*
         //13 
         [Fact]
         public void Name_And_BirthYear_From_WeightCondition()
@@ -419,6 +476,7 @@ namespace Algorithm.Test
 
             Assert.Equal(expected, result);
         }
+        */
     }
 }
 

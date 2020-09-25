@@ -6,6 +6,7 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Http.Headers;
+using System.Globalization;
 
 namespace Algorithm.Library.LinQ
 {
@@ -20,22 +21,34 @@ namespace Algorithm.Library.LinQ
 
 
         /// <summary>
-        /// Confirm if exist a player olther than...
+        /// 1. Confirm if exist a player olther than...
         /// </summary>
         /// <param name="age"></param>
         /// <returns></returns>
         public bool ExistPlayerOlderThan(int age)
         {
+            if (age <= 0)
+                throw new ArgumentException("The age must be valid");
+
             return Data.Any(player => GetAge(player.Birthday) > age);
         }
 
         private int GetAge(DateTime birthday)
         {
-            return DateTime.Now.Year - birthday.Year;
+            if (birthday == null)
+                throw new ArgumentException("The birthday must be valid");
+
+            int age = DateTime.Today.Year - birthday.Year;
+
+            // No es exacto
+            if (birthday.Month > DateTime.Now.Month)
+                --age;
+
+            return age;
         }
 
         /// <summary>
-        /// Count all femmale players
+        /// 2. Count all femmale players
         /// </summary>
         /// <returns></returns>
         public int CountFemmalePlayers()
@@ -46,49 +59,56 @@ namespace Algorithm.Library.LinQ
         }
 
         /// <summary>
-        /// Confirm if exist a Name in players list.
+        /// 3. Confirm if exist a Name in players list.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public bool ExistPlayerNamed(string name)
         {
+            if (name == null)
+                throw new ArgumentException("The name must be valid");
+
             return Data.Any(player =>
                 player.Name.Trim().ToLower() == name.Trim().ToLower() ||
                 player.Surname.Trim().ToLower() == name.Trim().ToLower());
         }
 
         /// <summary>
-        /// Get the initial position for a player
+        ///4. Get the initial position for a player
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public int PlayerPositionInitialList(string name)
         {
+            if (name == null)
+                throw new ArgumentException("The name must be valid");
+
             return Data.ToList().FindIndex(player =>
             player.Name.Trim().ToLower() == name.Trim().ToLower() ||
-            player.Surname.Trim().ToLower() == name.Trim().ToLower());
+            player.Surname.Trim().ToLower() == name.Trim().ToLower()) + 1;
         }
 
         /// <summary>
-        /// Get the ranking position
+        /// 5. Get the ranking position from name
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="elo"></param>
+        /// <param name="name"></param>>
         /// <returns></returns>
-        public int PlayerRankingPosition(string name, int elo)
+        public int PlayerRankingPosition(string name)
         {
-            //Seleccionar todos los jugadores por encima del elo de Kasparov
-            //Ordenar
-            //Devolver la posición de Kasparov en esa lista
+            if (name == null)
+                throw new ArgumentException("The name must be valid");
 
-            return Data.OrderBy(player => player.Elo).ToList().FindIndex(player =>
-            player.Elo == elo);
-            //player.Name.Trim().ToLower() == name.Trim().ToLower() ||
-            //player.Surname.Trim().ToLower() == name.Trim().ToLower());
+            //Option 01
+            return Data.OrderByDescending(player => player.Elo).ToList().FindIndex(player =>
+            player.Name.Trim().ToLower() == name.Trim().ToLower() ||
+            player.Surname.Trim().ToLower() == name.Trim().ToLower()) + 1;
+
+            //Option 02 a partir del elo 
+            //return Data.Where(player => player.Elo >= elo).ToList().Count();
         }
 
         /// <summary>
-        /// Calculate Elo average from all players
+        ///6. Calculate Elo average from all players
         /// </summary>
         /// <returns></returns>
         public int PlayersEloAverage()
@@ -97,31 +117,33 @@ namespace Algorithm.Library.LinQ
         }
 
         /// <summary>
-        /// Calculate weight from a range off elo
+        /// 7. Calculate weight from a range off elo
         /// </summary>
         /// <returns></returns>
-        //public double CalculateTotalWeight()
+        public double TotalWeightFromEloRange(int initialElo, int lastElo)
+        {
+            return (double)(decimal) Data.Where(player => 
+            player.Elo > initialElo &&
+            player.Elo < lastElo).Sum(player => player.Weight);
+        }
+
+        ///// <summary>
+        ///// 8.Return Surname and ELO in Ascendent sort by birthday
+        ///// </summary>
+        ///// <returns></returns>
+        //public List<Player> SurnameAndEloSortAscByBirthday()
         //{
-        //    throw new NotImplementedException();
+        //    var x = Data.OrderBy(player => player.Birthday.Year).Select(player => player.Surname);
         //}
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        //public List<Player> SortAscByBirthday()
-        //{
-        //    throw new NotImplementedException;
-        //}
-
-        /// <summary>
-        /// 
+        /// 9. Return 'Men' 'Women' or 'Equal' depending of proportion.
         /// </summary>
         /// <returns></returns>
         public string EvaluateMenWomenProportion()
         {
-            int menPlayers = Data.Where(player => player.Gender.ToString().ToUpper() == "M").Count();
-            int womenPlayers = Data.Where(player => player.Gender.ToString().ToUpper() == "F").Count();
+            int menPlayers = Data.Count(player => player.Gender.ToString().ToUpper() == "M");
+            int womenPlayers = Data.Count(player => player.Gender.ToString().ToUpper() == "F");
 
             if (menPlayers == womenPlayers)
                 return "Equals";
@@ -130,10 +152,10 @@ namespace Algorithm.Library.LinQ
         }
 
         /// <summary>
-        /// Get Masculin players with A or J or G as initial character in name.
+        /// 10. Get male players with A or J or G as initial character in name.
         /// </summary>
         /// <returns></returns>
-        public List<Player> PlayersNameWithConditions()
+        public List<Player> MalesNamesWithFirstChar()
         {
             return Data.Where(player => player.Gender.ToString().ToUpper() == "M" &&
             (player.Name.StartsWith('A') ||
@@ -142,29 +164,30 @@ namespace Algorithm.Library.LinQ
         }
 
         /// <summary>
-        /// 
+        /// 11. Return Players containing char 'a' and 'o' in Surname
         /// </summary>
         /// <returns></returns>
-        public List<Player> PlayersSurnamedWithConditions()
+        public List<Player> PlayersSurnamedContains(char first, char second)
         {
-            return Data.Where(player => player.Surname.Contains('a') && 
-            player.Surname.Contains('o')).ToList();
+            return Data.Where(player => player.Surname.Contains(first) &&
+            player.Surname.Contains(second)).ToList();
         }
 
         /// <summary>
-        /// 
+        /// 12. Return Players containing 'a' and 'o' in Surname in this order.
         /// </summary>
         /// <returns></returns>
-        public List<Player> PlayersSurnamedWithConditionsAO()
+        public List<Player> PlayersSurnamedContainsInThisOrder(char first, char second)
         {
-            return Data.Where(player => 
-            player.Surname.Contains('a') &&
-            player.Surname.Contains('o') && 
-            (player.Surname.Contains('a').ToString().IndexOf('a') < player.Surname.Contains('o').ToString().IndexOf('o'))).ToList();
+            return Data.Where(player =>
+            player.Surname.Contains(first) &&
+            player.Surname.Contains(second) &&
+            (player.Surname.Contains(first).ToString().IndexOf(first) < player.Surname.Contains(second).ToString().IndexOf(second))).ToList();
         }
 
+        /*
         /// <summary>
-        /// 14.
+        /// 13.
         /// </summary>
         /// <param name="minWeight"></param>
         /// <param name="maxWeight"></param>
@@ -174,6 +197,14 @@ namespace Algorithm.Library.LinQ
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 14.
+        /// </summary>
+        /// <returns></returns>
+        public List<ColoredName> NameAndColor()
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// 15.
         /// </summary>
@@ -193,6 +224,8 @@ namespace Algorithm.Library.LinQ
         {
             throw new NotImplementedException();
         }
+
+
 
         /// <summary>
         /// 17.
@@ -232,5 +265,6 @@ namespace Algorithm.Library.LinQ
         {
             throw new NotImplementedException();
         }
+      */
     }
 }
