@@ -116,9 +116,9 @@ namespace Algorithm.Test
         [Fact]
         public void Players_Elo_Average()
         {
-            int result = Query.PlayersEloAverage();
+            double result = Query.PlayersEloAverage();
 
-            Assert.Equal(2719, result);
+            Assert.Equal(2719, Math.Round(result));
         }
 
         //7
@@ -127,28 +127,27 @@ namespace Algorithm.Test
         {
             double result = Query.TotalWeightFromEloRange(2600, 2699);
 
-            Assert.Equal(202.1, result);
+            Assert.Equal(202.1, Math.Round(result, 1));
+        }
+ 
+        //8 
+        [Fact]
+        public void Surname_And_Elo_SortAsc_ByBirthday()
+        {
+            List<Tuple<string,uint>> result = Query.SurnameAndEloSortAscByBirthday();
+
+            List<Tuple<string, uint>> expected = new List<Tuple<string, uint>>()
+            {
+                Tuple.Create("KARPOV", (uint)2617),
+                Tuple.Create("KASPAROV", (uint)2812),
+                Tuple.Create("POLGAR", (uint)2646),
+                Tuple.Create("CARLSEN", (uint)2863),
+                Tuple.Create("YIFAN", (uint)2658)
+            };
+
+            Assert.Equal(expected, result);
         }
 
-        //8 
-        //[Fact]
-        //public void Surname_And_Elo_SortAsc_ByBirthday()
-        //{
-        //    List<Player> result = Query.SurnameAndEloSortAscByBirthday();
-
-        //    List<Player> expected = new List<Player>()
-        //    {
-        //        new Player(){Surname = "Karpov", Elo = 2617 },
-        //        new Player(){Surname = "Garry", Elo = 2812 },
-        //        new Player(){Surname = "Polgar", Elo = 2646 },
-        //        new Player(){Surname = "Carlsen", Elo = 2863 },
-        //        new Player(){Surname = "Yifan", Elo = 2658},   
-        //    };
-
-        //    Assert.Equal(expected, result);
-        //}
-
-  
         //9
         [Fact]
         public void Evaluate_Men_Women_Proportion()
@@ -166,29 +165,13 @@ namespace Algorithm.Test
 
             List<Player> expected = new List<Player>()
             {
-               new Player
-                {
-                    Name = "Anatoly",
-                    Surname = "Karpov",
-                    Gender = 'M',
-                    Birthday = new DateTime(1951,2,14),
-                    Weight = 81.4,
-                    Elo = 2617
-                },
-                new Player
-                {
-                    Name = "Garry",
-                    Surname = "Kasparov",
-                    Gender = 'm',
-                    Birthday = new DateTime(1963,7,4),
-                    Weight = 64.2,
-                    Elo = 2812
-                }
+               Query.Data.ElementAt(0),
+                ((List<Player>)Query.Data)[2]
             };
 
             Assert.Equal(expected, result);
         }
-        
+        /*
         //11
         [Fact]
         public void Players_Surnamed_Contains()
@@ -259,7 +242,7 @@ namespace Algorithm.Test
 
             Assert.Equal(expected, result);
         }
-        /*
+        
         //13 
         [Fact]
         public void Name_And_BirthYear_From_WeightCondition()
@@ -276,38 +259,39 @@ namespace Algorithm.Test
         }
 
         //14
-        [Fact]
-        public void Name_And_Color_From_WeightSortAsc()
-        {
-            List<ColoredName> result = Query.NameAndColor();
+        //[Fact]
+        //public void Name_And_Color_From_WeightSortAsc()
+        //{
+        //    List<ColoredName> result = Query.NameAndColor();
 
-            List<ColoredName> expected = new List<ColoredName>()
-            {
-                new ColoredName() {},
-                new ColoredName() {},
-                new ColoredName() {},
-                new ColoredName() {},
-                new ColoredName() {}
-            };
+        //    List<ColoredName> expected = new List<ColoredName>()
+        //    {
+        //        new ColoredName() {},
+        //        new ColoredName() {},
+        //        new ColoredName() {},
+        //        new ColoredName() {},
+        //        new ColoredName() {}
+        //    };
 
-            Assert.Equal(expected, result);
-        }
+        //    Assert.Equal(expected, result);
+        //}
 
         //15
         [Fact]
         public void Surname_And_Gender_By_ELO_Condition()
         {
-            List<Player> result = Query.SurnameAndGender(2800);
+            List<Player> result = Query.SurnameAndGender(2650);
 
             List<Player> expected = new List<Player>()
             {
                 new Player(){Surname = "Kasparov", Gender = 'M' },
+                new Player(){Surname = "Yifan", Gender = 'F' },
                 new Player(){Surname = "Carlsen", Gender = 'M' }
             };
 
             Assert.Equal(expected, result);
         }
-
+        /*
         //16
         [Fact]
         public void Name_And_Elo_From_BirthdayCondition()

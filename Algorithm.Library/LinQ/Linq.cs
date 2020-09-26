@@ -12,7 +12,7 @@ namespace Algorithm.Library.LinQ
 {
     public class Linq
     {
-        private IEnumerable<Player> Data { get; set; }
+        public IEnumerable<Player> Data { get; set; }
 
         public Linq(IEnumerable<Player> data)
         {
@@ -53,9 +53,9 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public int CountFemmalePlayers()
         {
-            //return Data.Count(player => player.Gender.ToString().ToUpper() == "F");
+            //return Data.Count(player => player.Gender == 'F');
 
-            return Data.Where(player => player.Gender.ToString().ToUpper() == "F").Count();
+            return Data.Where(player => player.Gender == 'F').Count();
         }
 
         /// <summary>
@@ -65,12 +65,11 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public bool ExistPlayerNamed(string name)
         {
-            if (name == null)
+            if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("The name must be valid");
 
             return Data.Any(player =>
-                player.Name.Trim().ToLower() == name.Trim().ToLower() ||
-                player.Surname.Trim().ToLower() == name.Trim().ToLower());
+                player.Name == name || player.Surname == name);
         }
 
         /// <summary>
@@ -80,12 +79,17 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public int PlayerPositionInitialList(string name)
         {
-            if (name == null)
+            if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("The name must be valid");
 
-            return Data.ToList().FindIndex(player =>
-            player.Name.Trim().ToLower() == name.Trim().ToLower() ||
-            player.Surname.Trim().ToLower() == name.Trim().ToLower()) + 1;
+            return Data.Select((player, i) =>
+                new
+                {
+                    Item = player,
+                    Index = i
+                })
+                .Where(x => x.Item.Name == name || x.Item.Surname == name)
+                .FirstOrDefault().Index;
         }
 
         /// <summary>
@@ -95,46 +99,66 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public int PlayerRankingPosition(string name)
         {
-            if (name == null)
+            if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("The name must be valid");
 
-            //Option 01
-            return Data.OrderByDescending(player => player.Elo).ToList().FindIndex(player =>
-            player.Name.Trim().ToLower() == name.Trim().ToLower() ||
-            player.Surname.Trim().ToLower() == name.Trim().ToLower()) + 1;
+            // Option 01 HIGH COST
+            //return Data.OrderByDescending(player => player.Elo)
+            //    .Select((player, i) =>
+            //    new
+            //    {
+            //        Item = player,
+            //        Index = i
+            //    })
+            //    .Where(x => x.Item.Name == name || x.Item.Surname == name)
+            //    .FirstOrDefault().Index;
 
-            //Option 02 a partir del elo 
-            //return Data.Where(player => player.Elo >= elo).ToList().Count();
-        }
+            // Option 02 LOW COST
+            return Data.OrderByDescending(player => player.Elo)
+                .Select((player, index) =>
+                new
+                {
+                    player.Name, 
+                    player.Surname,
+                    index
+                })
+                .Where(x => x.Name == name || x.Surname == name)
+                .FirstOrDefault().index;
+                }
 
         /// <summary>
         ///6. Calculate Elo average from all players
         /// </summary>
         /// <returns></returns>
-        public int PlayersEloAverage()
+        public double PlayersEloAverage()
         {
-            return (int)Data.Average(player => player.Elo);
+            return Data.Average(player => player.Elo);
         }
 
         /// <summary>
         /// 7. Calculate weight from a range off elo
         /// </summary>
         /// <returns></returns>
-        public double TotalWeightFromEloRange(int initialElo, int lastElo)
+        public double TotalWeightFromEloRange(uint initialElo, uint lastElo)
         {
-            return (double)(decimal) Data.Where(player => 
-            player.Elo > initialElo &&
-            player.Elo < lastElo).Sum(player => player.Weight);
+            if (initialElo > lastElo)
+                throw new ArgumentException("The lasElo must be bigger than initialElo");
+
+            return Data.Where(player =>
+               player.Elo >= initialElo && player.Elo <= lastElo)
+               .Sum(player => player.Weight);
         }
 
-        ///// <summary>
-        ///// 8.Return Surname and ELO in Ascendent sort by birthday
-        ///// </summary>
-        ///// <returns></returns>
-        //public List<Player> SurnameAndEloSortAscByBirthday()
-        //{
-        //    var x = Data.OrderBy(player => player.Birthday.Year).Select(player => player.Surname);
-        //}
+        /// <summary>
+        /// 8.Return Surname and ELO in Ascendent sort by birthday
+        /// </summary>
+        /// <returns></returns>
+        public List<Tuple<string, uint>> SurnameAndEloSortAscByBirthday()
+        {
+            return Data.OrderBy(player => player.Birthday.Year)
+                .Select(player =>
+                Tuple.Create(player.Surname, player.Elo)).ToList();
+        }
 
         /// <summary>
         /// 9. Return 'Men' 'Women' or 'Equal' depending of proportion.
@@ -142,14 +166,19 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public string EvaluateMenWomenProportion()
         {
-            int menPlayers = Data.Count(player => player.Gender.ToString().ToUpper() == "M");
-            int womenPlayers = Data.Count(player => player.Gender.ToString().ToUpper() == "F");
+            int menPlayers = Data.Count(player => player.Gender == 'M');
+            int womenPlayers = Data.Count(player => player.Gender == 'F');
 
-            if (menPlayers == womenPlayers)
-                return "Equals";
-
-            return menPlayers > womenPlayers ? "Men" : "Women";
+            return GetStrMaxGender(menPlayers, womenPlayers);
         }
+
+        private string GetStrMaxGender(int menPlayers, int womenPlayers) =>
+            menPlayers.CompareTo(womenPlayers) switch
+            {
+                1  => "Men",
+                -1 => "Woman",
+                _  => "Draw"
+            };
 
         /// <summary>
         /// 10. Get male players with A or J or G as initial character in name.
@@ -157,10 +186,10 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> MalesNamesWithFirstChar()
         {
-            return Data.Where(player => player.Gender.ToString().ToUpper() == "M" &&
-            (player.Name.StartsWith('A') ||
-            player.Name.StartsWith('J') ||
-            player.Name.StartsWith('G'))).ToList();
+            return Data.Where(player => player.Gender == 'M' &&
+                (player.Name.StartsWith('A') ||
+                player.Name.StartsWith('J') ||
+                player.Name.StartsWith('G'))).ToList();
         }
 
         /// <summary>
@@ -181,11 +210,10 @@ namespace Algorithm.Library.LinQ
         {
             return Data.Where(player =>
             player.Surname.Contains(first) &&
-            player.Surname.Contains(second) &&
-            (player.Surname.Contains(first).ToString().IndexOf(first) < player.Surname.Contains(second).ToString().IndexOf(second))).ToList();
+            player.Surname.Contains(second)).Where(player =>
+            player.Surname.IndexOf(first) < player.Surname.IndexOf(second)).ToList();
         }
 
-        /*
         /// <summary>
         /// 13.
         /// </summary>
@@ -194,7 +222,13 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> NameAndBirthYear(double minWeight, double maxWeight)
         {
-            throw new NotImplementedException();
+            var z = new List<Player>();
+
+            var x = Data.Where(player => player.Weight > minWeight &&
+                               player.Weight < maxWeight).Select(player =>
+                               new { player.Name, Birthday = player.Birthday.Year });
+
+            return z;
         }
 
         /// <summary>
@@ -205,16 +239,28 @@ namespace Algorithm.Library.LinQ
         {
             throw new NotImplementedException();
         }
-        /// <summary>
-        /// 15.
-        /// </summary>
-        /// <param name="elo"></param>
-        /// <returns></returns>
-        public List<Player> SurnameAndGender(int elo)
-        {
-            throw new NotImplementedException();
-        }
 
+        ///// <summary>
+        ///// 15. Get Surname and Gender from Elo and return format
+        ///// </summary>
+        ///// <param name="elo"></param>
+        ///// <returns></returns>
+        //public List<Player> SurnameAndGender(int elo)
+        //{
+        //    var z = new List<Player>();
+
+        //    var result = Data.Where(player => player.Elo >= elo).Select(player => new { player.Surname, player.Gender });
+
+        //    foreach (var item in result)
+        //    {
+        //        string genderString = item.Gender == 'F' ? "Female" : "Male";
+
+        //        String.Format("Surname = {0}, Gender = {1}", item.Surname, genderString);
+        //    }
+
+        //    return z;
+        //}
+        /*
         /// <summary>
         /// 16.
         /// </summary>
@@ -224,8 +270,6 @@ namespace Algorithm.Library.LinQ
         {
             throw new NotImplementedException();
         }
-
-
 
         /// <summary>
         /// 17.

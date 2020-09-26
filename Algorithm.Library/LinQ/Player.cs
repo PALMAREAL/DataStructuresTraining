@@ -6,17 +6,62 @@ namespace Algorithm.Library.LinQ
 {
     public class Player
     {
-        public string Name { get; set; }
+        private string _name;
 
-        public string Surname { get; set; }
+        public string Name 
+        {
+            get 
+            { 
+                return _name; 
+            }
 
-        public char Gender { get; set; }
+            set 
+            { 
+                _name = (!string.IsNullOrEmpty(value)) 
+                    ? value.Trim().ToUpper() 
+                    : string.Empty; 
+            } 
+        }
+
+        private string _surname;
+
+        public string Surname
+        {
+            get
+            {
+                return _surname;
+            }
+
+            set
+            {
+                _surname = (!string.IsNullOrEmpty(value))
+                    ? value.Trim().ToUpper()
+                    : string.Empty;
+            }
+        }
+
+        private char _gender;
+
+        public char Gender
+        {
+            get
+            {
+                return _gender;
+            }
+
+            set
+            {
+                _gender = (!char.IsWhiteSpace(value))
+                    ? char.ToUpper(value)
+                    : ' ';
+            }
+        }
 
         public DateTime Birthday { get; set; }
 
         public double Weight { get; set; }
 
-        public int Elo { get; set; }
+        public uint Elo { get; set; }
 
 
         // override object.Equals
@@ -30,9 +75,7 @@ namespace Algorithm.Library.LinQ
             return (Name == otherPlayer.Name) &&
                    (Surname == otherPlayer.Surname) &&
                    (Gender == otherPlayer.Gender) &&
-                   (Birthday == otherPlayer.Birthday) &&
-                   (Weight == otherPlayer.Weight) &&
-                   (Elo == otherPlayer.Elo);
+                   (Birthday == otherPlayer.Birthday);
         }
 
         // override object.GetHashCode
@@ -41,9 +84,7 @@ namespace Algorithm.Library.LinQ
             return (Name.GetHashCode() * 11) +
                    (Surname.GetHashCode() * 13) +
                    (Gender.GetHashCode() * 17) +
-                   (Birthday.GetHashCode() * 7) +
-                   (Weight.GetHashCode() * 19) +
-                   (Elo.GetHashCode() * 5);
+                   (Birthday.GetHashCode() * 7);
         }
     }
 }
