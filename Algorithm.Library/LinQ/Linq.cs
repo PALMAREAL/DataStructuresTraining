@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Http.Headers;
 using System.Globalization;
+using System.Drawing;
 
 namespace Algorithm.Library.LinQ
 {
@@ -194,6 +195,7 @@ namespace Algorithm.Library.LinQ
                 .ToList();
         }
 
+
         /// <summary>
         /// 12. Return Players containing 'a' and 'o' in Surname in this order.
         /// </summary>
@@ -207,53 +209,83 @@ namespace Algorithm.Library.LinQ
                                  player.Surname.IndexOf(second, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
-        /*
+
         /// <summary>
         /// 13.
         /// </summary>
         /// <param name="minWeight"></param> 
         /// <param name="maxWeight"></param>
         /// <returns></returns>
-        public List<Player> NameAndBirthYear(double minWeight, double maxWeight)
+        public List<Tuple<string, int>> NameAndBirthYear(double minWeight, double maxWeight)
         {
-            var z = new List<Player>();
-
-            var x = Data.Where(player => player.Weight > minWeight &&
-                               player.Weight < maxWeight).Select(player =>
-                               new { player.Name, Birthday = player.Birthday.Year });
-
-            return z;
+            return Data.Where(player => player.Weight >= minWeight && player.Weight <= maxWeight)
+                       .Select(player => Tuple.Create(player.Name, player.Birthday.Year))
+                       .ToList();
         }
-
+    
         /// <summary>
         /// 14.
         /// </summary>
         /// <returns></returns>
-        public List<ColoredName> NameAndColor()
+        public List<Tuple<string, Color>> NameAndColor()
         {
-            throw new NotImplementedException();
+            return Data.OrderBy(player => player.Weight)
+                       .Select(player => Tuple.Create(player.Name, GetColor(player.Weight)))
+                       .ToList();
         }
 
-        ///// <summary>
-        ///// 15. Get Surname and Gender from Elo and return format
-        ///// </summary>
-        ///// <param name="elo"></param>
-        ///// <returns></returns>
-        //public List<Player> SurnameAndGender(int elo)
-        //{
-        //    var z = new List<Player>();
+        private Color GetColor(double weight) =>
+                        weight switch
+                        {
+                             var x when x > 80 => Color.Red,
+                             var x when x > 65 => Color.Yellow,
+                             _ => Color.Green
+                        };
 
-        //    var result = Data.Where(player => player.Elo >= elo).Select(player => new { player.Surname, player.Gender });
+        /// <summary>
+        /// 15. 
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public List<Tuple<string, Color>> NameAndColorTop(int count)
+        {
+            if (count <= 0)
+                throw new ArgumentException("The count must be non negative");
 
-        //    foreach (var item in result)
-        //    {
-        //        string genderString = item.Gender == 'F' ? "Female" : "Male";
+            return Data.OrderBy(player => player.Weight)
+                       .Select(player => Tuple.Create(player.Name, GetColor(player.Weight)))
+                       .Take(count)
+                       .ToList();
+        }
 
-        //        String.Format("Surname = {0}, Gender = {1}", item.Surname, genderString);
-        //    }
 
-        //    return z;
-        //}
+
+
+        /// <summary>
+        /// 16. Get Surname and Gender from Elo and return format
+        /// </summary>
+        /// <param name="elo"></param>
+        /// <returns></returns>
+        public List<Tuple<string, string>> SurnameAndGenderOverElo(int elo)
+        {
+            if (elo <= 0)
+                throw new ArgumentException("The elo must be non negative");
+
+            return Data.Where(player => player.Elo > elo)
+                       .Select(player => Tuple.Create(player.Surname, GetStrGender(player.Gender)))
+                       .ToList();
+        }
+
+        private string GetStrGender(char gender) =>
+                              gender switch
+                              {
+                                  'F' => "Female",
+                                  'M' => "Male",
+                                  'f' => "Female",
+                                  'm' => "Male",
+                                   _  => string.Empty
+                              };
+
         /*
         /// <summary>
         /// 16.
@@ -262,7 +294,7 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> NameAndElo(DateTime dateTime)
         {
-            throw new NotImplementedException();
+           throw new NotImplementedException();
         }
 
         /// <summary>
@@ -272,7 +304,7 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> FullNameAndBirthdayDescSortByRanking(int number)
         {
-            throw new NotImplementedException();
+           throw new NotImplementedException();
         }
 
         /// <summary>
@@ -281,7 +313,7 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> PlayersGroupByGenderAndDescSortElo()
         {
-            throw new NotImplementedException();
+           throw new NotImplementedException();
         }
 
         /// <summary>
@@ -292,7 +324,7 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> PlayersExceptWeights(double minWeight, double maxWeight)
         {
-            throw new NotImplementedException();
+           throw new NotImplementedException();
         }
 
         /// <summary>
@@ -301,8 +333,8 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> PlayersWithEvenElo()
         {
-            throw new NotImplementedException();
+           throw new NotImplementedException();
         }
-      */
+        */
     }
 }

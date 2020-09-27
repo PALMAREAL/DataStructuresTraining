@@ -35,7 +35,7 @@ namespace Algorithm.Library.LinQ
             set
             {
                 _surname = (!string.IsNullOrEmpty(value))
-                    ? value.Trim().ToUpper()
+                    ? value.Trim()
                     : string.Empty;
             }
         }

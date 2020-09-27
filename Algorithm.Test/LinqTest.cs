@@ -2,6 +2,7 @@
 using Algorithm.Library.LinQ;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -148,7 +149,7 @@ namespace Algorithm.Test
                 Tuple.Create("YIFAN", (uint)2658)
             };
 
-            Assert.Equal(expected, result);
+            Assert.Equal(expected, result, new TupleComparerByNameAndElo());
         }
 
         //9
@@ -205,57 +206,74 @@ namespace Algorithm.Test
 
             Assert.Equal(expected, result);
         }
-        /*
+        
         //13 
         [Fact]
         public void Name_And_BirthYear_From_WeightCondition()
         {
-            List<Player> result = Query.NameAndBirthYear(69, 82);
+            List<Tuple<string,int>> result = Query.NameAndBirthYear(69, 82);
 
-            List<Player> expected = new List<Player>()
+            List<Tuple<string,int>> expected = new List<Tuple<string,int>>() 
             {
-                new Player(){Name = "Anatoly", Birthday = new DateTime(1951,2,14)},
-                new Player(){Name = "Judith", Birthday = new DateTime(1976,2,11) }
+                Tuple.Create("Anatoly", 1951),
+                Tuple.Create("Judith", 1976)
             };
 
             Assert.Equal(expected, result);
         }
 
         //14
-        //[Fact]
-        //public void Name_And_Color_From_WeightSortAsc()
-        //{
-        //    List<ColoredName> result = Query.NameAndColor();
+        [Fact]
+        public void Name_And_Color_From_WeightSortAsc()
+        {
+            List<Tuple<string,Color>> result = Query.NameAndColor();
 
-        //    List<ColoredName> expected = new List<ColoredName>()
-        //    {
-        //        new ColoredName() {},
-        //        new ColoredName() {},
-        //        new ColoredName() {},
-        //        new ColoredName() {},
-        //        new ColoredName() {}
-        //    };
+            List<Tuple<string, Color>> expected = new List<Tuple<string, Color>>()
+            {
+                Tuple.Create("Hou", Color.Green),
+                Tuple.Create("Garry", Color.Green),
+                Tuple.Create("Magnus", Color.Yellow),
+                Tuple.Create("Judith", Color.Yellow),
+                Tuple.Create("Anatoly", Color.Red)  
+            };
 
-        //    Assert.Equal(expected, result);
-        //}
+            Assert.Equal(expected, result, new TupleComparerByNameAndColor());
+        }
 
         //15
         [Fact]
-        public void Surname_And_Gender_By_ELO_Condition()
+        public void TopN_Name_And_Color_From_WeightSortAsc()
         {
-            List<Player> result = Query.SurnameAndGender(2650);
+            List<Tuple<string, Color>> result = Query.NameAndColorTop(3);
 
-            List<Player> expected = new List<Player>()
+            List<Tuple<string, Color>> expected = new List<Tuple<string, Color>>()
             {
-                new Player(){Surname = "Kasparov", Gender = 'M' },
-                new Player(){Surname = "Yifan", Gender = 'F' },
-                new Player(){Surname = "Carlsen", Gender = 'M' }
+                Tuple.Create("Hou", Color.Green),
+                Tuple.Create("Garry", Color.Green),
+                Tuple.Create("Magnus", Color.Yellow)
             };
 
-            Assert.Equal(expected, result);
+            Assert.Equal(expected, result, new TupleComparerByNameAndColor());
         }
-        /*
+
         //16
+        [Fact]
+        public void Surname_And_Gender_Over_Elo()
+        {
+            List<Tuple<string, string>> result = Query.SurnameAndGenderOverElo(2650);
+
+            List<Tuple<string, string>> expected = new List<Tuple<string, string>>()
+            {
+                Tuple.Create("Kasparov", "Male"),
+                Tuple.Create("Yifan", "Female"),
+                Tuple.Create("Carlsen", "Male")
+            };
+
+            Assert.Equal(expected, result, new TupleComparerBySurnameAndGender());
+        }
+
+        /*
+        //17
         [Fact]
         public void Name_And_Elo_From_BirthdayCondition()
         {
