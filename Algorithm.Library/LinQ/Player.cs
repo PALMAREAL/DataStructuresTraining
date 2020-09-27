@@ -18,7 +18,7 @@ namespace Algorithm.Library.LinQ
             set 
             { 
                 _name = (!string.IsNullOrEmpty(value)) 
-                    ? value.Trim().ToUpper() 
+                    ? value.Trim()
                     : string.Empty; 
             } 
         }

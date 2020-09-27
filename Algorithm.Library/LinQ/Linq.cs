@@ -69,7 +69,8 @@ namespace Algorithm.Library.LinQ
                 throw new ArgumentException("The name must be valid");
 
             return Data.Any(player =>
-                player.Name == name || player.Surname == name);
+                player.Name.Equals(name, StringComparison.OrdinalIgnoreCase) || 
+                player.Surname.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -88,8 +89,9 @@ namespace Algorithm.Library.LinQ
                     Item = player,
                     Index = i
                 })
-                .Where(x => x.Item.Name == name || x.Item.Surname == name)
-                .FirstOrDefault().Index;
+                .Where(x => x.Item.Name.Equals(name, StringComparison.OrdinalIgnoreCase) || 
+                            x.Item.Surname.Equals(name, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault().Index + 1;
         }
 
         /// <summary>
@@ -102,18 +104,6 @@ namespace Algorithm.Library.LinQ
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("The name must be valid");
 
-            // Option 01 HIGH COST
-            //return Data.OrderByDescending(player => player.Elo)
-            //    .Select((player, i) =>
-            //    new
-            //    {
-            //        Item = player,
-            //        Index = i
-            //    })
-            //    .Where(x => x.Item.Name == name || x.Item.Surname == name)
-            //    .FirstOrDefault().Index;
-
-            // Option 02 LOW COST
             return Data.OrderByDescending(player => player.Elo)
                 .Select((player, index) =>
                 new
@@ -122,8 +112,9 @@ namespace Algorithm.Library.LinQ
                     player.Surname,
                     index
                 })
-                .Where(x => x.Name == name || x.Surname == name)
-                .FirstOrDefault().index;
+                .Where(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase) || 
+                            x.Surname.Equals(name, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault().index + 1;
                 }
 
         /// <summary>
@@ -144,8 +135,7 @@ namespace Algorithm.Library.LinQ
             if (initialElo > lastElo)
                 throw new ArgumentException("The lasElo must be bigger than initialElo");
 
-            return Data.Where(player =>
-               player.Elo >= initialElo && player.Elo <= lastElo)
+            return Data.Where(player => player.Elo >= initialElo && player.Elo <= lastElo)
                .Sum(player => player.Weight);
         }
 
@@ -156,8 +146,8 @@ namespace Algorithm.Library.LinQ
         public List<Tuple<string, uint>> SurnameAndEloSortAscByBirthday()
         {
             return Data.OrderBy(player => player.Birthday.Year)
-                .Select(player =>
-                Tuple.Create(player.Surname, player.Elo)).ToList();
+                .Select(player => Tuple.Create(player.Surname, player.Elo))
+                .ToList();
         }
 
         /// <summary>
@@ -186,10 +176,11 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> MalesNamesWithFirstChar()
         {
-            return Data.Where(player => player.Gender == 'M' &&
-                (player.Name.StartsWith('A') ||
-                player.Name.StartsWith('J') ||
-                player.Name.StartsWith('G'))).ToList();
+            return Data.Where(player => player.Gender.ToString().Equals("M", StringComparison.OrdinalIgnoreCase) &&
+                                        (player.Name.StartsWith("A", StringComparison.OrdinalIgnoreCase) ||
+                                        player.Name.StartsWith("J", StringComparison.OrdinalIgnoreCase) ||
+                                        player.Name.StartsWith("G", StringComparison.OrdinalIgnoreCase)))
+                .ToList();
         }
 
         /// <summary>
@@ -198,8 +189,9 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> PlayersSurnamedContains(char first, char second)
         {
-            return Data.Where(player => player.Surname.Contains(first) &&
-            player.Surname.Contains(second)).ToList();
+            return Data.Where(player => player.Surname.Contains(first, StringComparison.OrdinalIgnoreCase) &&
+                                        player.Surname.Contains(second, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
         /// <summary>
@@ -209,15 +201,17 @@ namespace Algorithm.Library.LinQ
         public List<Player> PlayersSurnamedContainsInThisOrder(char first, char second)
         {
             return Data.Where(player =>
-            player.Surname.Contains(first) &&
-            player.Surname.Contains(second)).Where(player =>
-            player.Surname.IndexOf(first) < player.Surname.IndexOf(second)).ToList();
+                player.Surname.Contains(first, StringComparison.OrdinalIgnoreCase) &&
+                player.Surname.Contains(second, StringComparison.OrdinalIgnoreCase))
+                .Where(player => player.Surname.IndexOf(first, StringComparison.OrdinalIgnoreCase) < 
+                                 player.Surname.IndexOf(second, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
-
+        /*
         /// <summary>
         /// 13.
         /// </summary>
-        /// <param name="minWeight"></param>
+        /// <param name="minWeight"></param> 
         /// <param name="maxWeight"></param>
         /// <returns></returns>
         public List<Player> NameAndBirthYear(double minWeight, double maxWeight)

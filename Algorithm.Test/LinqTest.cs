@@ -67,6 +67,9 @@ namespace Algorithm.Test
             Query = new Linq(data);
         }
 
+        public Player PlayerAt(int index) =>
+            Query.Data.ElementAt(index);
+
         //1
         [Fact]
         public void Exist_Player_Older_Than()
@@ -165,13 +168,13 @@ namespace Algorithm.Test
 
             List<Player> expected = new List<Player>()
             {
-               Query.Data.ElementAt(0),
+               PlayerAt(0),
                 ((List<Player>)Query.Data)[2]
             };
 
             Assert.Equal(expected, result);
         }
-        /*
+        
         //11
         [Fact]
         public void Players_Surnamed_Contains()
@@ -180,33 +183,9 @@ namespace Algorithm.Test
 
             List<Player> expected = new List<Player>()
             {
-                new Player
-                {
-                    Name = "Anatoly",
-                    Surname = "Karpov",
-                    Gender = 'M',
-                    Birthday = new DateTime(1951,2,14),
-                    Weight = 81.4,
-                    Elo = 2617
-                },
-                new Player
-                {
-                    Name = "Judith",
-                    Surname = "Polgar",
-                    Gender = 'F',
-                    Birthday = new DateTime(1976,2,11),
-                    Weight = 70.7,
-                    Elo = 2646
-                },
-                new Player
-                {
-                    Name = "Garry",
-                    Surname = "Kasparov",
-                    Gender = 'm',
-                    Birthday = new DateTime(1963,7,4),
-                    Weight = 64.2,
-                    Elo = 2812
-                }
+                PlayerAt(0),
+                PlayerAt(1),
+                PlayerAt(2),
             };
 
             Assert.Equal(expected, result);
@@ -220,29 +199,13 @@ namespace Algorithm.Test
 
             List<Player> expected = new List<Player>()
             {
-                 new Player
-                {
-                    Name = "Anatoly",
-                    Surname = "Karpov",
-                    Gender = 'M',
-                    Birthday = new DateTime(1951,2,14),
-                    Weight = 81.4,
-                    Elo = 2617
-                },
-                new Player
-                {
-                    Name = "Garry",
-                    Surname = "Kasparov",
-                    Gender = 'm',
-                    Birthday = new DateTime(1963,7,4),
-                    Weight = 64.2,
-                    Elo = 2812
-                }
+                PlayerAt(0),
+                PlayerAt(2),
             };
 
             Assert.Equal(expected, result);
         }
-        
+        /*
         //13 
         [Fact]
         public void Name_And_BirthYear_From_WeightCondition()
