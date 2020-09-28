@@ -20,7 +20,6 @@ namespace Algorithm.Library.LinQ
             Data = data;
         }
 
-
         /// <summary>
         /// 1. Confirm if exist a player olther than...
         /// </summary>
@@ -70,7 +69,7 @@ namespace Algorithm.Library.LinQ
                 throw new ArgumentException("The name must be valid");
 
             return Data.Any(player =>
-                player.Name.Equals(name, StringComparison.OrdinalIgnoreCase) || 
+                player.Name.Equals(name, StringComparison.OrdinalIgnoreCase) ||
                 player.Surname.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -90,7 +89,7 @@ namespace Algorithm.Library.LinQ
                     Item = player,
                     Index = i
                 })
-                .Where(x => x.Item.Name.Equals(name, StringComparison.OrdinalIgnoreCase) || 
+                .Where(x => x.Item.Name.Equals(name, StringComparison.OrdinalIgnoreCase) ||
                             x.Item.Surname.Equals(name, StringComparison.OrdinalIgnoreCase))
                 .FirstOrDefault().Index + 1;
         }
@@ -109,14 +108,14 @@ namespace Algorithm.Library.LinQ
                 .Select((player, index) =>
                 new
                 {
-                    player.Name, 
+                    player.Name,
                     player.Surname,
                     index
                 })
-                .Where(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase) || 
+                .Where(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase) ||
                             x.Surname.Equals(name, StringComparison.OrdinalIgnoreCase))
                 .FirstOrDefault().index + 1;
-                }
+        }
 
         /// <summary>
         ///6. Calculate Elo average from all players
@@ -166,21 +165,21 @@ namespace Algorithm.Library.LinQ
         private string GetStrMaxGender(int menPlayers, int womenPlayers) =>
             menPlayers.CompareTo(womenPlayers) switch
             {
-                1  => "Men",
+                1 => "Men",
                 -1 => "Woman",
-                _  => "Draw"
+                _ => "Draw"
             };
 
         /// <summary>
         /// 10. Get male players with A or J or G as initial character in name.
         /// </summary>
         /// <returns></returns>
-        public List<Player> MalesNamesWithFirstChar()
+        public List<Player> MalesNamesWithFirstChar(string[] input)
         {
             return Data.Where(player => player.Gender.ToString().Equals("M", StringComparison.OrdinalIgnoreCase) &&
-                                        (player.Name.StartsWith("A", StringComparison.OrdinalIgnoreCase) ||
-                                        player.Name.StartsWith("J", StringComparison.OrdinalIgnoreCase) ||
-                                        player.Name.StartsWith("G", StringComparison.OrdinalIgnoreCase)))
+                                        (player.Name.StartsWith(input[0], StringComparison.OrdinalIgnoreCase) ||
+                                        player.Name.StartsWith(input[1], StringComparison.OrdinalIgnoreCase) ||
+                                        player.Name.StartsWith(input[2], StringComparison.OrdinalIgnoreCase)))
                 .ToList();
         }
 
@@ -195,7 +194,6 @@ namespace Algorithm.Library.LinQ
                 .ToList();
         }
 
-
         /// <summary>
         /// 12. Return Players containing 'a' and 'o' in Surname in this order.
         /// </summary>
@@ -205,7 +203,7 @@ namespace Algorithm.Library.LinQ
             return Data.Where(player =>
                 player.Surname.Contains(first, StringComparison.OrdinalIgnoreCase) &&
                 player.Surname.Contains(second, StringComparison.OrdinalIgnoreCase))
-                .Where(player => player.Surname.IndexOf(first, StringComparison.OrdinalIgnoreCase) < 
+                .Where(player => player.Surname.IndexOf(first, StringComparison.OrdinalIgnoreCase) <
                                  player.Surname.IndexOf(second, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
@@ -223,7 +221,6 @@ namespace Algorithm.Library.LinQ
                        .ToList();
         }
 
-
         /// <summary>
         /// 14.
         /// </summary>
@@ -235,13 +232,12 @@ namespace Algorithm.Library.LinQ
                        .ToList();
         }
 
-
         private Color GetColor(double weight) =>
                         weight switch
                         {
-                             var x when x > 80 => Color.Red,
-                             var x when x > 65 => Color.Yellow,
-                             _ => Color.Green
+                            var x when x > 80 => Color.Red,
+                            var x when x > 65 => Color.Yellow,
+                            _ => Color.Green
                         };
 
         /// <summary>
@@ -282,7 +278,7 @@ namespace Algorithm.Library.LinQ
                                   'M' => "Male",
                                   'f' => "Female",
                                   'm' => "Male",
-                                   _  => string.Empty
+                                  _ => string.Empty
                               };
 
         /// <summary>
@@ -292,7 +288,10 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Tuple<string, int>> NameAndEloPlayersBornAfter(DateTime dateTime)
         {
-           return Data.Where(player => player.Birthday >= dateTime)
+            if (dateTime == null)
+                throw new ArgumentException("The dateTime must be valid");
+
+            return Data.Where(player => player.Birthday >= dateTime)
                  .Select(player => Tuple.Create(player.Name, player.Elo))
                  .ToList();
         }
@@ -314,7 +313,75 @@ namespace Algorithm.Library.LinQ
 
         private string GetFullName(string name, string surname)
         {
-           return string.Format("{0}-{1}", name, surname);
+            return string.Format("{0}-{1}", name, surname);
+        }
+
+        /// <summary>
+        /// 19. Get players group by gender and Sort desc Elo
+        /// </summary>
+        /// <returns></returns>
+        public List<Player> PlayersGroupByGenderAndDescSortElo()
+        {
+            var x = Data.GroupBy(player => player.Gender)
+                .Select(grp =>
+                    new
+                    {
+                        Gender = grp.Key,
+                        Players = grp.ToList()
+
+                    })
+                .ToList();
+   
+            var males = x.Where(grp => grp.Gender == 'M')
+                .Select(grp => grp.Players
+                .OrderByDescending(grp => grp.Elo))
+                .FirstOrDefault();
+
+            var females = x.Where(grp => grp.Gender == 'F')
+                .Select(grp => grp.Players
+                .OrderByDescending(grp => grp.Elo))
+                .FirstOrDefault();
+
+            return males.Concat(females).ToList();
+        }
+
+        /// <summary>
+        /// 23. List of players except max weight and min weight.
+        /// </summary>
+        /// <param name="maxWeigh"></param>
+        /// <param name="minWeight"></param>
+        /// <returns></returns>
+        public List<Player> PlayersExceptMaxAndMinWeights(double maxWeight, double minWeight)
+        {
+            if (maxWeight <= 0
+                || minWeight <= 0
+                || maxWeight < minWeight)
+                throw new ArgumentException("The inputs lists must be valid");
+
+            return Data.Where(player => player.Weight < maxWeight && player.Weight > minWeight).ToList();
+        }
+
+        /// <summary>
+        /// 24. Get players except max and min weigth without parameters
+        /// </summary>
+        /// <returns></returns>
+        public List<Player> PlayersExceptMaxAndMinWeightsNoArguments()
+        {
+            var maxWeight = Data.Max(player => player.Weight);
+
+            var minWeight = Data.Min(player => player.Weight);
+
+            return Data.Where(player => player.Weight < maxWeight && player.Weight > minWeight).ToList();
+        }
+
+        /// <summary>
+        /// 25. Get players with even Elo
+        /// </summary>
+        /// <returns></returns>
+        public List<Player> PlayersWithEvenElo()
+        {
+            return Data.Where(player => player.Elo % 2 == 0).ToList();
+            
         }
     }
 }

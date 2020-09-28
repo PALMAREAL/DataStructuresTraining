@@ -165,12 +165,15 @@ namespace Algorithm.Test
         [Fact]
         public void Males_Players_With_Name_First_Char()
         {
-            List<Player> result = Query.MalesNamesWithFirstChar();
+            string[] input = new[] { "A", "J", "G" };
+
+            List<Player> result = Query.MalesNamesWithFirstChar(input);
 
             List<Player> expected = new List<Player>()
             {
-               PlayerAt(0),
-                ((List<Player>)Query.Data)[2]
+                PlayerAt(0),
+                PlayerAt(2)
+                //((List<Player>)Query.Data)[2]
             };
 
             Assert.Equal(expected, result);
@@ -302,7 +305,6 @@ namespace Algorithm.Test
             Assert.Equal(expected, result, new TupleComparerByNameAndBirthday());
         }
 
-        /*
         //19
         [Fact]
         public void Players_GroupBy_Gender_And_DescSortElo()
@@ -311,97 +313,49 @@ namespace Algorithm.Test
 
             List<Player> expected = new List<Player>()
             {
-                new Player
-                {
-                    Name = "Anatoly",
-                    Surname = "Karpov",
-                    Gender = 'M',
-                    Birthday = new DateTime(1951,2,14),
-                    Weight = 81.4,
-                    Elo = 2617
-                },
-                new Player
-                {
-                    Name = "Garry",
-                    Surname = "Kasparov",
-                    Gender = 'm',
-                    Birthday = new DateTime(1963,7,4),
-                    Weight = 64.2,
-                    Elo = 2812
-                },
-                new Player
-                {
-                    Name = "  MaGnus",
-                    Surname = "Carlsen",
-                    Gender = 'M',
-                    Birthday = new DateTime(1990,6,28),
-                    Weight = 67.9,
-                    Elo = 2863
-                },
-                new Player
-                {
-                    Name = "Judith",
-                    Surname = "Polgar",
-                    Gender = 'F',
-                    Birthday = new DateTime(1976,2,11),
-                    Weight = 70.7,
-                    Elo = 2646
-                },
-                new Player
-                {
-                    Name = "Hou",
-                    Surname = "Yifan",
-                    Gender = 'f',
-                    Birthday = new DateTime(1994,8,23),
-                    Weight = 50.0,
-                    Elo = 2658
-                }
+                PlayerAt(4),
+                PlayerAt(2),
+                PlayerAt(0),
+                PlayerAt(3),
+                PlayerAt(1)
             };
 
             Assert.Equal(expected, result);
         }
 
-        //19
+        //23
         [Fact]
         public void Players_Except_MaxWeight_And_MinWeight()
         {
-            List<Player> result = Query.PlayersExceptWeights(81.4, 50.0);
+            List<Player> result = Query.PlayersExceptMaxAndMinWeights(81.4, 50.0);
 
             List<Player> expected = new List<Player>()
             {
-                new Player
-                {
-                    Name = "Garry",
-                    Surname = "Kasparov",
-                    Gender = 'm',
-                    Birthday = new DateTime(1963,7,4),
-                    Weight = 64.2,
-                    Elo = 2812
-                },
-                new Player
-                {
-                    Name = "  MaGnus",
-                    Surname = "Carlsen",
-                    Gender = 'M',
-                    Birthday = new DateTime(1990,6,28),
-                    Weight = 67.9,
-                    Elo = 2863
-                },
-                new Player
-                {
-                    Name = "Judith",
-                    Surname = "Polgar",
-                    Gender = 'F',
-                    Birthday = new DateTime(1976,2,11),
-                    Weight = 70.7,
-                    Elo = 2646
-                }
+                PlayerAt(1),
+                PlayerAt(2),
+                PlayerAt(4)
             };
 
             Assert.Equal(expected, result);
         }
 
-        //20
+        //24
+        [Fact]
+        public void Players_Except_MaxWeight_And_MinWeight_No_Arguments()
+        {
+            List<Player> result = Query.PlayersExceptMaxAndMinWeightsNoArguments();
+
+            List<Player> expected = new List<Player>()
+            {
+                PlayerAt(1),
+                PlayerAt(2),
+                PlayerAt(4)
+            };
+
+            Assert.Equal(expected, result);
+        }
+
+        //25
         [Fact]
         public void Players_With_EvenElo()
         {
@@ -409,38 +363,13 @@ namespace Algorithm.Test
 
             List<Player> expected = new List<Player>()
             {
-                new Player
-                {
-                    Name = "Judith",
-                    Surname = "Polgar",
-                    Gender = 'F',
-                    Birthday = new DateTime(1976,2,11),
-                    Weight = 70.7,
-                    Elo = 2646
-                },
-                new Player
-                {
-                    Name = "Garry",
-                    Surname = "Kasparov",
-                    Gender = 'm',
-                    Birthday = new DateTime(1963,7,4),
-                    Weight = 64.2,
-                    Elo = 2812
-                },
-                new Player
-                {
-                    Name = "Hou",
-                    Surname = "Yifan",
-                    Gender = 'f',
-                    Birthday = new DateTime(1994,8,23),
-                    Weight = 50.0,
-                    Elo = 2658
-                }
+                PlayerAt(1),
+                PlayerAt(2),
+                PlayerAt(3)
             };
 
             Assert.Equal(expected, result);
         }
-        */
     }
 }
 
