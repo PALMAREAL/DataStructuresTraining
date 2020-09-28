@@ -138,15 +138,15 @@ namespace Algorithm.Test
         [Fact]
         public void Surname_And_Elo_SortAsc_ByBirthday()
         {
-            List<Tuple<string,uint>> result = Query.SurnameAndEloSortAscByBirthday();
+            List<Tuple<string,int>> result = Query.SurnameAndEloSortAscByBirthday();
 
-            List<Tuple<string, uint>> expected = new List<Tuple<string, uint>>()
+            List<Tuple<string, int>> expected = new List<Tuple<string, int>>()
             {
-                Tuple.Create("KARPOV", (uint)2617),
-                Tuple.Create("KASPAROV", (uint)2812),
-                Tuple.Create("POLGAR", (uint)2646),
-                Tuple.Create("CARLSEN", (uint)2863),
-                Tuple.Create("YIFAN", (uint)2658)
+                Tuple.Create("KARPOV", 2617),
+                Tuple.Create("KASPAROV", 2812),
+                Tuple.Create("POLGAR", 2646),
+                Tuple.Create("CARLSEN", 2863),
+                Tuple.Create("YIFAN", 2658)
             };
 
             Assert.Equal(expected, result, new TupleComparerByNameAndElo());
@@ -272,39 +272,38 @@ namespace Algorithm.Test
             Assert.Equal(expected, result, new TupleComparerBySurnameAndGender());
         }
 
-        /*
         //17
         [Fact]
-        public void Name_And_Elo_From_BirthdayCondition()
+        public void Name_And_Elo_Players_Born_After()
         {
-            List<Player> result = Query.NameAndElo(new DateTime(1990, 1, 1));
+            List<Tuple<string, int>> result = Query.NameAndEloPlayersBornAfter(new DateTime (1990,1,1));
 
-            List<Player> expected = new List<Player>()
+            List<Tuple<string, int>> expected = new List<Tuple<string, int>>()
             {
-                new Player(){ Name = "Magnus", Elo = 2863  },
-                new Player(){ Name = "Hou", Elo = 2658 }
+                Tuple.Create("Hou", 2658),
+                Tuple.Create("Magnus", 2863)
             };
 
-            Assert.Equal(expected, result);
-        }
-
-        //17
-        [Fact]
-        public void Name_Surname_Birthday_SortDesc_By_Ranking()
-        {
-            List<Player> result = Query.FullNameAndBirthdayDescSortByRanking(3);
-
-            List<Player> expected = new List<Player>()
-            {
-                new Player(){ Name = "Hou", Surname = "Yifan", Birthday = new DateTime(1994,8,23) },
-                new Player(){ Name = "Garry", Surname = "Kasparov" ,Birthday = new DateTime(1963,7,4) },
-                new Player(){ Name = "Magnus", Surname = "Carlsen", Birthday = new DateTime(1990,6,28) }
-            };
-
-            Assert.Equal(expected, result);
+            Assert.Equal(expected, result, new TupleComparerByNameAndElo());
         }
 
         //18
+        [Fact]
+        public void Name_Surname_Birthday_SortDesc_By_Ranking()
+        {
+            List<Tuple<string, DateTime>> result = Query.FullNameAndBirthdayDescSortByRanking(2);
+
+            List<Tuple<string, DateTime>> expected = new List<Tuple<string, DateTime>>()
+            {
+                Tuple.Create("Magnus-Carlsen", new DateTime(1990,6,28)),
+                Tuple.Create("Garry-Kasparov", new DateTime(1963,7,4))
+            };
+
+            Assert.Equal(expected, result, new TupleComparerByNameAndBirthday());
+        }
+
+        /*
+        //19
         [Fact]
         public void Players_GroupBy_Gender_And_DescSortElo()
         {

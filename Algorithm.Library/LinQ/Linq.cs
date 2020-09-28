@@ -144,7 +144,7 @@ namespace Algorithm.Library.LinQ
         /// 8.Return Surname and ELO in Ascendent sort by birthday
         /// </summary>
         /// <returns></returns>
-        public List<Tuple<string, uint>> SurnameAndEloSortAscByBirthday()
+        public List<Tuple<string, int>> SurnameAndEloSortAscByBirthday()
         {
             return Data.OrderBy(player => player.Birthday.Year)
                 .Select(player => Tuple.Create(player.Surname, player.Elo))
@@ -222,7 +222,8 @@ namespace Algorithm.Library.LinQ
                        .Select(player => Tuple.Create(player.Name, player.Birthday.Year))
                        .ToList();
         }
-    
+
+
         /// <summary>
         /// 14.
         /// </summary>
@@ -233,6 +234,7 @@ namespace Algorithm.Library.LinQ
                        .Select(player => Tuple.Create(player.Name, GetColor(player.Weight)))
                        .ToList();
         }
+
 
         private Color GetColor(double weight) =>
                         weight switch
@@ -257,9 +259,6 @@ namespace Algorithm.Library.LinQ
                        .Take(count)
                        .ToList();
         }
-
-
-
 
         /// <summary>
         /// 16. Get Surname and Gender from Elo and return format
@@ -286,55 +285,36 @@ namespace Algorithm.Library.LinQ
                                    _  => string.Empty
                               };
 
-        /*
         /// <summary>
-        /// 16.
+        ///  17. Get Name and Elo from player born after some date
         /// </summary>
         /// <param name="dateTime"></param>
         /// <returns></returns>
-        public List<Player> NameAndElo(DateTime dateTime)
+        public List<Tuple<string, int>> NameAndEloPlayersBornAfter(DateTime dateTime)
         {
-           throw new NotImplementedException();
+           return Data.Where(player => player.Birthday >= dateTime)
+                 .Select(player => Tuple.Create(player.Name, player.Elo))
+                 .ToList();
         }
 
         /// <summary>
-        /// 17.
+        /// 18. Get Name-Surname and Birthday Sort Desc by Ranking
         /// </summary>
-        /// <param name="number"></param>
+        /// <param name="count"></param>
         /// <returns></returns>
-        public List<Player> FullNameAndBirthdayDescSortByRanking(int number)
+        public List<Tuple<string, DateTime>> FullNameAndBirthdayDescSortByRanking(int count)
         {
-           throw new NotImplementedException();
+            var x = Data.OrderByDescending(player => player.Elo)
+                .Take(count)
+                .Select(player => Tuple.Create(GetFullName(player.Name, player.Surname), player.Birthday.Date))
+                .ToList();
+
+            return x;
         }
 
-        /// <summary>
-        /// 18.
-        /// </summary>
-        /// <returns></returns>
-        public List<Player> PlayersGroupByGenderAndDescSortElo()
+        private string GetFullName(string name, string surname)
         {
-           throw new NotImplementedException();
+           return string.Format("{0}-{1}", name, surname);
         }
-
-        /// <summary>
-        /// 19.
-        /// </summary>
-        /// <param name="minWeight"></param>
-        /// <param name="maxWeight"></param>
-        /// <returns></returns>
-        public List<Player> PlayersExceptWeights(double minWeight, double maxWeight)
-        {
-           throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 20.
-        /// </summary>
-        /// <returns></returns>
-        public List<Player> PlayersWithEvenElo()
-        {
-           throw new NotImplementedException();
-        }
-        */
     }
 }

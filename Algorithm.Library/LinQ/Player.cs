@@ -61,7 +61,7 @@ namespace Algorithm.Library.LinQ
 
         public double Weight { get; set; }
 
-        public uint Elo { get; set; }
+        public int Elo { get; set; }
 
 
         // override object.Equals
