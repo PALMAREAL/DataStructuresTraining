@@ -59,6 +59,8 @@ namespace Algorithm.Library.LinQ
 
         public DateTime Birthday { get; set; }
 
+        public CountryEnum Country { get; set; }
+
         public double Weight { get; set; }
 
         public int Elo { get; set; }

@@ -24,6 +24,7 @@ namespace Algorithm.Test
                     Surname = "Karpov",
                     Gender = 'M',
                     Birthday = new DateTime(1951,2,14),
+                    Country = CountryEnum.RUS,
                     Weight = 81.4,
                     Elo = 2617
                 },
@@ -33,6 +34,7 @@ namespace Algorithm.Test
                     Surname = "Polgar",
                     Gender = 'F',
                     Birthday = new DateTime(1976,2,11),
+                    Country = CountryEnum.HUN,
                     Weight = 70.7,
                     Elo = 2646
                 },
@@ -42,6 +44,7 @@ namespace Algorithm.Test
                     Surname = "Kasparov",
                     Gender = 'm',
                     Birthday = new DateTime(1963,7,4),
+                    Country = CountryEnum.RUS,
                     Weight = 64.2,
                     Elo = 2812
                 },
@@ -51,6 +54,7 @@ namespace Algorithm.Test
                     Surname = "Yifan",
                     Gender = 'f',
                     Birthday = new DateTime(1994,8,23),
+                    Country = CountryEnum.CHN,
                     Weight = 50.0,
                     Elo = 2658
                 },
@@ -60,6 +64,7 @@ namespace Algorithm.Test
                     Surname = "Carlsen",
                     Gender = 'M',
                     Birthday = new DateTime(1990,6,28),
+                    Country = CountryEnum.NOR,
                     Weight = 67.9,
                     Elo = 2863
                 }
@@ -369,6 +374,15 @@ namespace Algorithm.Test
             };
 
             Assert.Equal(expected, result);
+        }
+
+        //26 
+        [Fact]
+        public void Grouping_Players_by_Country()
+        {
+            List<CountryGroupDto> result = Query.GroupingPlayersByCountry();
+
+            Assert.Equal(4, result.Count);
         }
     }
 }

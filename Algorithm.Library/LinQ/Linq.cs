@@ -8,6 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Http.Headers;
 using System.Globalization;
 using System.Drawing;
+using System.Security.Principal;
 
 namespace Algorithm.Library.LinQ
 {
@@ -296,6 +297,8 @@ namespace Algorithm.Library.LinQ
                  .ToList();
         }
 
+
+
         /// <summary>
         /// 18. Get Name-Surname and Birthday Sort Desc by Ranking
         /// </summary>
@@ -322,24 +325,26 @@ namespace Algorithm.Library.LinQ
         /// <returns></returns>
         public List<Player> PlayersGroupByGenderAndDescSortElo()
         {
-            var x = Data.GroupBy(player => player.Gender)
+            var players = Data.GroupBy(player => player.Gender)
+                //.OrderBy(grp => grp.Key)
+                //.OrderBy(grp => grp.Count())
+                .OrderBy(grp => grp.Average(player => player.Elo))
                 .Select(grp =>
                     new
                     {
                         Gender = grp.Key,
-                        Players = grp.ToList()
-
+                        TopElo = grp.Max(player => player.Elo),
+                        TopPlayer = grp.FirstOrDefault(player => player.Elo == grp.Max(player => player.Elo)),
+                        Players = grp.OrderByDescending(grp => grp.Elo).ToList()
                     })
                 .ToList();
    
-            var males = x.Where(grp => grp.Gender == 'M')
-                .Select(grp => grp.Players
-                .OrderByDescending(grp => grp.Elo))
+            var males = players.Where(grp => grp.Gender == 'M')
+                .Select(grp => grp.Players)
                 .FirstOrDefault();
 
-            var females = x.Where(grp => grp.Gender == 'F')
-                .Select(grp => grp.Players
-                .OrderByDescending(grp => grp.Elo))
+            var females = players.Where(grp => grp.Gender == 'F')
+                .Select(grp => grp.Players)
                 .FirstOrDefault();
 
             return males.Concat(females).ToList();
@@ -383,5 +388,45 @@ namespace Algorithm.Library.LinQ
             return Data.Where(player => player.Elo % 2 == 0).ToList();
             
         }
+
+        /// <summary>
+        /// 26. Group players by countries
+        /// </summary>
+        /// <returns></returns>
+        public List<CountryGroupDto> GroupingPlayersByCountry()
+        {
+            var grouping = Data.GroupBy(player => player.Country)
+                 .Select(grp => new CountryGroupDto
+                 {
+                     Country = grp.Key,
+                     Players = grp.Select(player => new PlayerDto 
+                     {
+                         Name = $"{player.Name} {player.Surname}",
+                         Elo = player.Elo,
+                         Gender = GetGenderString(player.Gender),
+                         Color = GetColor(player.Weight)
+                     })
+                     .OrderByDescending(player => player.Elo)
+                     .ToList(),
+                     PlayerTop = grp.FirstOrDefault(player => player.Elo == grp.Max(player => player.Elo)),
+                     AverageElo = Math.Round(grp.Average(player => player.Elo))
+                 })
+                 //.OrderBy(x => x.Country.ToString())
+                 .OrderByDescending(x => x.Players.Count())
+                 .ToList();
+
+           return grouping;
+        }
+
+        private string GetGenderString(char gender) =>
+            gender switch
+            {
+               'f' => "woman",
+               'F' => "woman",
+               'm'=> "men",
+               'M'=> "men",
+                _ => string.Empty
+            };
+
     }
 }
